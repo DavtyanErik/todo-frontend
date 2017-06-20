@@ -13,8 +13,8 @@ api.get('/api/todos', (req, res) => {
 });
 
 api.post('/api/todos', (req, res) => {
-    console.log(req)
-    // todos.push({ id: uuid(), task });
+    const { task } = req.body;
+    todos.push({ id: uuid(), task });
     res.json(todos);
 });
 
