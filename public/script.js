@@ -44,6 +44,10 @@ const deleteTodo = (id) => {
 };
 const postTodo = () => {
     const { inputValue: task, id } = state;
+    if (state.inputValue === '') {
+        console.log('Don\'t leave input empty');
+        return;
+    }
     if (!id) {
         const options = {
             method: 'post',
