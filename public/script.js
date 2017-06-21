@@ -3,11 +3,13 @@ const app = document.getElementById('app');
 const state = {
     todos: [],
     inputValue: '',
-    id: 0
+    id: 0,
+    err: false
 };
 const reset = () => {
     state.inputValue = '';
     state.id = 0;
+    state.err = false;
 }
 const handleIdChange = (id, task) => {
     state.inputValue = task;
@@ -45,7 +47,8 @@ const deleteTodo = (id) => {
 const postTodo = () => {
     const { inputValue: task, id } = state;
     if (state.inputValue === '') {
-        console.log('Don\'t leave input empty');
+        state.err = true;
+        renderTodos();
         return;
     }
     if (!id) {
@@ -82,7 +85,13 @@ const InputTodo = () => `
     <button onclick="postTodo()"> Submit </button>
 `;
 
-const View = (todos) => `${InputTodo()}${TodoList(todos)}`;
+const ErrorMessage = () => state.err ? `<p> Input can't be empty </p>` : `<div></div>`;
+
+const View = (todos) => `
+    ${ErrorMessage()}
+    ${InputTodo()}
+    ${TodoList(todos)}
+`;
 
 const renderTodos = () => {
     app.innerHTML = View(state.todos);
