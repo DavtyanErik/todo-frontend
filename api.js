@@ -1,47 +1,54 @@
-const uuid = require('uuid/v4');
 const express = require('express');
+const mongoose = require('mongoose');
+require('./TodoScheme');
+const Todo = mongoose.model('Todo');
 
 const api = express.Router();
 
-const todos = [
-    {id: uuid(), task: 'Eat'},
-    {id: uuid(), task: 'Sleep'}
-];
+const sendTodos = (res, userId) => {
+    Todo.find({ userId })
+        .then(todos => {
+            res.json(todos);
+        });
+};
 
 api.get('/api/todos', (req, res) => {
-    res.json(todos);
+    sendTodos(res, req.cookies.userId);
 });
 
 api.post('/api/todos', (req, res) => {
-    req.check('task', 'Task can\'t be empty').notEmpty();
+    req.check('text', 'Task can\'t be empty').notEmpty();
     req.getValidationResult()
         .then(result => {
             if (result.array().length === 0) {
-                const { task } = req.body;
-                todos.push({ id: uuid(), task });
-                res.json(todos);
-            } else {
+                const { body: { text }, cookies: { userId } } = req;
+                const newTodo = new Todo({
+                    text,
+                    userId
+                });
+                newTodo.save()
+                    .then(() => sendTodos(res, userId));
+                } else {
                 res.end();
             }
         });
 });
 
-api.delete('/api/todos/:id', (req, res) => {
-    const { id } = req.params;
-    const index = todos.findIndex(todo => todo.id === id);
-    todos.splice(index, 1);
-    res.json(todos);
+api.delete('/api/todos/:_id', (req, res) => {
+    const { _id } = req.params;
+    Todo.remove({ _id })
+        .then(() => sendTodos(res, req.cookies.userId));
 });
 
-api.put('/api/todos/:id', (req, res) => {
-    req.check('task', 'Task can\'t be empty').notEmpty();
+api.put('/api/todos/:_id', (req, res) => {
+    req.check('text', 'Task can\'t be empty').notEmpty();
     req.getValidationResult()
         .then(result => {
             if (result.array().length === 0) {
-                const { id } = req.params;
-                const index = todos.findIndex(todo => todo.id === id);
-                todos[index].task = req.body.task;
-                res.json(todos);
+                const { _id } = req.params;
+                const { text } = req.body;
+                Todo.update({ _id }, {$set: { text }})
+                    .then(() => sendTodos(res, req.cookies.userId));
             } else {
                 res.end();
             }

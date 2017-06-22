@@ -3,25 +3,25 @@ const app = document.getElementById('app');
 const state = {
     todos: [],
     inputValue: '',
-    id: 0,
+    _id: 0,
     err: false
 };
 const reset = () => {
     state.inputValue = '';
-    state.id = 0;
+    state._id = 0;
     state.err = false;
 }
-const handleIdChange = (id, task) => {
-    state.inputValue = task;
-    state.id = id;
+const handleIdChange = (_id, text) => {
+    state.inputValue = text;
+    state._id = _id;
     renderTodos();
 };
 const handleInputChange = (e) => {
     state.inputValue = e.target.value;
 };
 
-const fetchTodos = ({ id, options }) => {
-    const link = id ? `/api/todos/${id}` : `/api/todos`;
+const fetchTodos = ({ _id, options }) => {
+    const link = _id ? `/api/todos/${_id}` : `/api/todos`;
     reset();
     fetch(link, options)
         .then(res => {
@@ -40,42 +40,42 @@ const getTodos = () => {
     const options = { method: 'get' };
     fetchTodos({ options });
 };
-const deleteTodo = (id) => {
+const deleteTodo = (_id) => {
     const options = { method: 'delete' };
-    fetchTodos({ id, options });
+    fetchTodos({ _id, options });
 };
 const postTodo = () => {
-    const { inputValue: task, id } = state;
+    const { inputValue: text, _id } = state;
     if (state.inputValue === '') {
         state.err = true;
         renderTodos();
         return;
     }
-    if (!id) {
+    if (!_id) {
         const options = {
             method: 'post',
             headers: new Headers({'Content-Type': 'application/json'}),
-            body: JSON.stringify({ task })
+            body: JSON.stringify({ text })
         };
         fetchTodos({ options });
     } else {
-        updateTodo(id, task)
+        updateTodo(_id, text)
     }
 };
-const updateTodo = (id, task) => {
+const updateTodo = (_id, text) => {
     const options = {
         method: 'put',
         headers: new Headers({'Content-Type': 'application/json'}),
-        body: JSON.stringify({ task })
+        body: JSON.stringify({ text })
     };
-    fetchTodos({ id, options });
+    fetchTodos({ _id, options });
 };
 
-const Todo = ({ task, id }) => `
+const Todo = ({ text, _id }) => `
     <div>
-        <span> ${task} </span>
-        <button onclick="handleIdChange('${id}', '${task}')"> Edit </button>
-        <button onclick="deleteTodo('${id}')"> Delete </button>
+        <span> ${text} </span>
+        <button onclick="handleIdChange('${_id}', '${text}')"> Edit </button>
+        <button onclick="deleteTodo('${_id}')"> Delete </button>
     </div>
 `;
 const TodoList = (todos) => todos.map(todo => Todo(todo)).join('');

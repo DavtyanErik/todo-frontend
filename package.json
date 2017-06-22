@@ -10,8 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "express-validator": "^3.2.0",
+    "mongoose": "^4.10.7",
     "nodemon": "^1.11.0",
     "uuid": "^3.1.0"
   }
