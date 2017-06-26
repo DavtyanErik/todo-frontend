@@ -1,5 +1,5 @@
 const fetchTodos = ({ _id, options }) => {
-    const link = _id ? `/api/todos/${_id}` : `/api/todos`;
+    const link = _id ? `http://localhost:8081/api/todos/${_id}` : `http://localhost:8081/api/todos`;
     return fetch(link, {
         ...options,
         headers: new Headers({'Content-Type': 'application/json'})

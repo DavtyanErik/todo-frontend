@@ -1,5 +1,6 @@
 const api = require('./api');
 const path = require('path');
+const cors = require('cors');
 const uuid = require('uuid/v4');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,6 +14,7 @@ mongoose.connect('mongodb://localhost:27017/todo-lists');
 const PORT = 8081;
 const app = express();
 
+app.use(cors({methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: true, origin: true}));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
