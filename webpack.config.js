@@ -15,6 +15,7 @@ const config = {
     contentBase: 'public',
     historyApiFallback: true
   },
+  devtool: '#inline-source-map',
   module: {
     loaders: [
       {

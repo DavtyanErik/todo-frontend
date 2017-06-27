@@ -7,8 +7,6 @@ class List extends Component {
             <ListElement
                 key={todo._id}
                 todo={todo}
-                deleteTodo={this.props.deleteTodo}
-                editTodo={this.props.editTodo}
             />
         );
         return (
